@@ -20,6 +20,7 @@ export const ECE_ENV =
 */
 export const ECE_APP_CONFIG =
 {
-  USE_LANG_DETECTOR: false
+  USE_LANG_DETECTOR         : false,
+  USE_LIGHT_AS_DEFAULT_THEME: true
 } as const;
 
