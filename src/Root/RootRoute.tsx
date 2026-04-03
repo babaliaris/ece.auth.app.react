@@ -1,5 +1,8 @@
+import { useTranslation } from "react-i18next";
 
 function RootRoute() {
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -12,7 +15,7 @@ function RootRoute() {
         }
       }
       >
-        Hello ece.auth.app.react
+        Hello {t('APP_TITLE')}
       </div>
     </>
   )
