@@ -1,5 +1,5 @@
 
-function App() {
+function RootRoute() {
 
   return (
     <>
@@ -18,4 +18,4 @@ function App() {
   )
 }
 
-export default App;
+export default RootRoute;
