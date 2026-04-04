@@ -8,19 +8,20 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { ECE_ROUTE_PATHS } from '@/core/routes';
 
-export type LoginDataType =
+export type RegisterDataType =
 {
-  email   : string,
-  password: string
+  email           : string,
+  password        : string
+  password_repeat : string
 }
 
 type LoginProps =
 {
-  onLoginFormSubmit: (data: LoginDataType) => Promise<void>
+  onRegisterFormSubmit: (data: RegisterDataType) => Promise<void>
 };
 
 
-function LoginUI(props: LoginProps)
+function RegisterUI(props: LoginProps)
 {
   const {t}       = useTranslation();
   const navigate  = useNavigate();
@@ -29,16 +30,21 @@ function LoginUI(props: LoginProps)
   {
     email   : yup
     .string()
-    .email(t('login.email.invalid'))
+    .email(t('register.email.invalid'))
     .required(t('required')),
 
     password: yup
     .string()
     .required(t('required'))
-    .min(8, t('login.password.min'))
-    .matches(/[A-Z]/, t('login.password.uppercase'))      // 1 capital letter
-    .matches(/[0-9]/, t('login.password.number'))         // 1 number
-    .matches(/[!@#$%^&*]/, t('login.password.special')),  // 1 special symbol
+    .min(8, t('register.password.min'))
+    .matches(/[A-Z]/, t('register.password.uppercase'))      // 1 capital letter
+    .matches(/[0-9]/, t('register.password.number'))         // 1 number
+    .matches(/[!@#$%^&*]/, t('register.password.special')),  // 1 special symbol
+
+    password_repeat: yup
+    .string()
+    .required(t('required'))
+    .oneOf([yup.ref('password')], t('register.password_repeat.invalid'))
 
   }).required(), [t]);
 
@@ -50,7 +56,11 @@ function LoginUI(props: LoginProps)
   } = useForm(
   {
     resolver: yupResolver(schema),
-    defaultValues: { email: '', password: '' },
+    defaultValues:
+    {
+      email: '', password: '',
+      password_repeat: ''
+    },
     mode: 'onChange'
   });
 
@@ -83,30 +93,42 @@ function LoginUI(props: LoginProps)
             textAlign: "center"
           }}
           >
-            {t('login.title')}
+            {t('register.title')}
           </Typography>
 
           <Box
           component="form"
-          aria-label={t('login.aria_label')}
+          aria-label={t('register.aria_label')}
           onSubmit=
           {
-            handleSubmit(props.onLoginFormSubmit)
+            handleSubmit(props.onRegisterFormSubmit)
           }
           >
             <TextInputCmp
               name="email"
-              label={t('login.email.label')}
-              placeholder={t('login.email.placeholder')}
-              aria-label={t('login.email.aria_label')}
+              autoComplete='email'
+              label={t('register.email.label')}
+              placeholder={t('register.email.placeholder')}
+              aria-label={t('register.email.aria_label')}
               control={control}
             />
 
             <TextInputCmp
               name="password"
-              label={t('login.password.label')}
-              placeholder={t('login.password.placeholder')}
-              aria-label={t('login.password.aria_label')}
+              autoComplete='new-password'
+              label={t('register.password.label')}
+              placeholder={t('register.password.placeholder')}
+              aria-label={t('register.password.aria_label')}
+              type="password"
+              control={control}
+            />
+
+            <TextInputCmp
+              name="password_repeat"
+              autoComplete='new-password'
+              label={t('register.password_repeat.label')}
+              placeholder={t('register.password_repeat.placeholder')}
+              aria-label={t('register.password_repeat.aria_label')}
               type="password"
               control={control}
             />
@@ -117,19 +139,19 @@ function LoginUI(props: LoginProps)
               <Button
               type="submit"
               variant="contained"
-              aria-label={t('login.submit_btn.aria_label')}
+              aria-label={t('register.submit_btn.aria_label')}
               disabled={!formState.isValid}
               >
-                {t('login.submit_btn.submit')}
+                {t('register.submit_btn.submit')}
               </Button>
 
               <Button
               type='button'
               variant="contained"
-              aria-label={t('login.register_btn.aria_label')}
-              onClick={()=>navigate(ECE_ROUTE_PATHS.REGISTER)}
+              aria-label={t('register.login_btn.aria_label')}
+              onClick={()=>navigate(ECE_ROUTE_PATHS.LOGIN)}
               >
-                {t('login.register_btn.name')}
+                {t('register.login_btn.name')}
               </Button>
             </Box>
 
@@ -143,5 +165,5 @@ function LoginUI(props: LoginProps)
   );
 };
 
-export default LoginUI;
+export default RegisterUI;
 

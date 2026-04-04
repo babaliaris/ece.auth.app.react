@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import LoginCmp, { type LoginDataType } from "./LoginUI.tsx";
+import LoginUI, { type LoginDataType } from "./LoginUI.tsx";
 
 function LoginRoute()
 {
@@ -9,7 +9,7 @@ function LoginRoute()
   }, []);
 
   return (
-    <LoginCmp
+    <LoginUI
     onLoginFormSubmit={onLogin}
     />
   );

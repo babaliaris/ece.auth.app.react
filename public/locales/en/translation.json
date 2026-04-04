@@ -29,6 +29,58 @@
     {
       "submit": "Login",
       "aria_label": "Login button"
+    },
+
+    "register_btn":
+    {
+
+      "name": "Register",
+      "aria_label": "Button that opens the registration form"
+    }
+  },
+
+  "register":
+  {
+    "title" : "Register Login",
+    "aria_label": "Register login form",
+    "email":
+    {
+      "label": "Email",
+      "placeholder": "Enter your email address",
+      "invalid": "This is not a valid email address",
+      "aria_label": "Email text input"
+    },
+
+    "password":
+    {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "aria_label": "Password text input",
+      "min": "At least 8 characters",
+      "uppercase": "It must contain at least one capital letter",
+      "number": "It must contain at least one number",
+      "special": "It must contain at least one special symbol: !@#$%^&*"
+    },
+
+    "password_repeat":
+    {
+      "label": "Reapeat Password",
+      "placeholder": "Repeat your password",
+      "aria_label": "Repeat password text input",
+      "invalid": "The passwords do no match"
+    },
+
+    "submit_btn":
+    {
+      "submit": "Register",
+      "aria_label": "Register button"
+    },
+
+    "login_btn":
+    {
+
+      "name": "Login",
+      "aria_label": "Button that opens the login form"
     }
   }
 }
