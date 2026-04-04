@@ -40,7 +40,11 @@ function LoginUI(props: LoginProps)
   }).required(), [t]);
 
 
-  const { control, handleSubmit, formState } = useForm(
+  const {
+    control,
+    handleSubmit,
+    formState
+  } = useForm(
   {
     resolver: yupResolver(schema),
     defaultValues: { email: '', password: '' },
