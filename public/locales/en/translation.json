@@ -1,3 +1,34 @@
 {
-  "app_title": "Ece Auth App"
+  "app_title" : "Ece Auth App",
+  "required"  : "Required",
+
+  "login":
+  {
+    "title" : "User Login",
+    "aria_label": "User login form",
+    "email":
+    {
+      "label": "Email",
+      "placeholder": "Enter your email address",
+      "invalid": "This is not a valid email address",
+      "aria_label": "Email text input"
+    },
+
+    "password":
+    {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "aria_label": "Password text input",
+      "min": "At least 8 characters",
+      "uppercase": "It must contain at least one capital letter",
+      "number": "It must contain at least one number",
+      "special": "It must contain at least one special symbol: !@#$%^&*"
+    },
+
+    "submit_btn":
+    {
+      "submit": "Login",
+      "aria_label": "Login button"
+    }
+  }
 }
