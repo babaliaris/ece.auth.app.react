@@ -1,37 +1,16 @@
-import { useTranslation } from "react-i18next";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { eceGetLightTheme, eceGetDarkTheme } from "@/core/themes.core";
-import { ECE_APP_CONFIG } from "@/core/literals.core";
+import { Outlet } from "react-router";
+import { EceAppProvider } from "@/core/contexts/app_context/app.context";
 
 function RootRoute()
 {
-
-  const { t } = useTranslation();
-
   return (
-    <ThemeProvider
-      theme=
-      {
-        ECE_APP_CONFIG.USE_LIGHT_AS_DEFAULT_THEME
-          ? eceGetLightTheme()
-          : eceGetDarkTheme()
-      }
-    >
-      <CssBaseline/>
+    // Contains the Theme Provider as well.
+    <EceAppProvider>
+      
+      {/*Render the rest of the APP*/}
+      <Outlet/>
 
-      <div
-      style={
-        {
-          width: "50%",
-          marginLeft: "auto",
-          marginRight: "auto",
-          textAlign: "center"
-        }
-      }
-      >
-        Hello {t('app_title')}
-      </div>
-    </ThemeProvider>
+    </EceAppProvider>
   );
 }
 

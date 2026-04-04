@@ -1,27 +1,39 @@
 import { createTheme } from "@mui/material";
+import type { Theme } from "@mui/material";
 
-export function eceGetLightTheme()
+export type ThemeModeType = "LIGHT" | "DARK";
+
+const light_theme: Theme = createTheme(
 {
-  return createTheme(
+  palette:
   {
-    palette:
-    {
-      mode: "light"
-    }
-  });
-}
+    mode: "light"
+  }
+});
 
-
-
-
-export function eceGetDarkTheme()
+const dark_theme: Theme = createTheme(
 {
-  return createTheme(
+  palette:
   {
-    palette:
-    {
-      mode: "dark"
-    }
-  });
+    mode: "dark"
+  }
+});
+
+
+/**
+  * Get the a theme object.
+  *
+  * @param mode Selects the theme object to be returned.
+  *
+  * @returns An MUI Theme object.
+  */
+export function eceGetTheme(mode: ThemeModeType)
+{
+  switch(mode)
+  {
+    case "LIGHT": return light_theme;
+    case "DARK" : return dark_theme;
+    default     : return light_theme;
+  }
 }
 
