@@ -13,7 +13,7 @@ const isProd = import.meta.env.PROD;
   * @param message The log message.
   * @param data Any type of data.
   */ 
-const RemoteLog = async (level: LogLevel, message: string, data?: any) =>
+const RemoteLog = async (level: LogLevel, message: string, data?: unknown) =>
 {
   try
   {
@@ -36,7 +36,7 @@ const RemoteLog = async (level: LogLevel, message: string, data?: any) =>
 
   catch (e)
   {
-    console.warn("[RemoteLog()] Failed to send log to the server.");
+    console.warn("[RemoteLog()] Failed to send log to the server because: ", e);
   }
 };
 
@@ -50,17 +50,17 @@ const RemoteLog = async (level: LogLevel, message: string, data?: any) =>
   */
 export const ece_logger =
 {
-  info: (msg: string, data?: any) =>
+  info: (msg: string, data?: unknown) =>
   {
     if (!isProd) console.info(`[INFO] ${msg}`, data);
   },
 
-  warn: (msg: string, data?: any) =>
+  warn: (msg: string, data?: unknown) =>
   {
     if (!isProd) console.warn(`[WARN] ${msg}`, data);
   },
 
-  error: (msg: string, data?: any) =>
+  error: (msg: string, data?: unknown) =>
   {
     if (!isProd) console.error(`[ERROR] ${msg}`, data);
     if (isProd) RemoteLog('error', msg, data);
