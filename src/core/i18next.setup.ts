@@ -14,6 +14,12 @@ i18n.init(
 {
   fallbackLng : 'el',
   debug       : import.meta.env.DEV,
+  backend     :
+  {
+    // We normalize the path to insure no double slashes // are in the base env name.
+    // This path tells i18next where to find the translation files.
+    loadPath: `/${import.meta.env.VITE_ROUTER_BASE}/locales/{{lng}}/{{ns}}.json`.replace(/\/+/g, '/')
+  },
 
   interpolation:
   {

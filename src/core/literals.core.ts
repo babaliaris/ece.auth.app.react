@@ -20,7 +20,7 @@ export const ECE_ENV =
 */
 export const ECE_APP_CONFIG =
 {
-  USE_LANG_DETECTOR         : false,
+  USE_LANG_DETECTOR : false,
 } as const;
 
 

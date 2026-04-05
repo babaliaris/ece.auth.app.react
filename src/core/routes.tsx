@@ -17,6 +17,10 @@ export const ECE_ROUTE_PATHS =
 
 export function eceGetRouter()
 {
+  // Replace double slashes // if they exist in the middle.
+  const base_name = import.meta.env.VITE_ROUTER_BASE || '';
+  const base_path = `/${base_name}/`.replace(/\/+/g, '/');
+
   return createBrowserRouter(
   [
     {
@@ -36,7 +40,10 @@ export function eceGetRouter()
         }
       ]
     }
-  ]);
+  ],
+  {
+    basename: base_path
+  });
 }
 
 

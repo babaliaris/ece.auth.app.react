@@ -1,5 +1,6 @@
 import { type EceApiResultI, type ApiError } from "./api.types";
 import { ece_logger } from "@/core/logger.core";
+import { ECE_ROUTE_PATHS } from "@/core/routes";
 
 type RequestOptions =
 {
@@ -38,7 +39,7 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
 
   // Log some info.
   ece_logger.info(
-    `[request.servece.ts:eceRequest()] Ecexuting request: ${opts.path}`,
+    `[request.service.ts:eceRequest()] Ecexuting request: ${opts.path}`,
     opts
   );
 
@@ -75,7 +76,7 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
         else
         {
           ece_logger.warn(
-            `[request.servece.ts:eceRequest()] Standard Error for request: ${opts.path}`,
+            `[request.service.ts:eceRequest()] Standard Error for request: ${opts.path}`,
             {
               opts  : opts,
               error : json
@@ -84,6 +85,27 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
           error = json;
         }
       }
+    }
+
+    // Redirect if to login if Unauthorized.
+    if (response.status === 401)
+    {
+      ece_logger.warn("[request.service.ts:eceRequest()] Unauthorized. Redirecting to login.");
+
+      // Remove any double slashes in the middle of the path.
+      const base            = import.meta.env.VITE_ROUTER_BASE;
+      const target          = ECE_ROUTE_PATHS.LOGIN;
+      const pathPart        = `/${base}/${target}/`.replace(/\/+/g, '/');
+      const safeRedirect    = `${pathPart}?unauthorized=true`;
+      window.location.href  = safeRedirect;
+
+      // Return early to prevent the UI from trying to process bad data
+      return {
+        success : false,
+        status  : response.status,
+        data    : null,
+        error   : error
+      };
     }
 
     // Handle Network -> Create a custom Error object.
@@ -100,7 +122,7 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
       };
 
       ece_logger.error(
-        `[request.servece.ts:eceRequest()] Server Side Network Error for request: ${opts.path}`,
+        `[request.service.ts:eceRequest()] Server Side Network Error for request: ${opts.path}`,
         {
           opts  : opts,
           error : error
@@ -125,7 +147,7 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
   catch (e)
   {
     ece_logger.error(
-      `[request.servece.ts:eceRequest()] Client Side Network Error for request: ${opts.path}`,
+      `[request.service.ts:eceRequest()] Client Side Network Error for request: ${opts.path}`,
       {
         opts  : opts,
         error : e instanceof Error ? e.message : 'Check your internet connection'
