@@ -90,14 +90,14 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
     // Redirect if to login if Unauthorized.
     if (response.status === 401)
     {
-      ece_logger.warn("[request.service.ts:eceRequest()] Unauthorized. Redirecting to login.");
-
       // Remove any double slashes in the middle of the path.
       const base            = import.meta.env.VITE_ROUTER_BASE;
       const target          = ECE_ROUTE_PATHS.LOGIN;
       const pathPart        = `/${base}/${target}/`.replace(/\/+/g, '/');
       const safeRedirect    = `${pathPart}?unauthorized=true`;
       window.location.href  = safeRedirect;
+
+      ece_logger.warn(`[request.service.ts:eceRequest()] Unauthorized. Redirecting to: ${safeRedirect}`);
 
       // Return early to prevent the UI from trying to process bad data
       return {
