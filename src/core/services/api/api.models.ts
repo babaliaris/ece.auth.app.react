@@ -1,13 +1,16 @@
+export type ApiUserRoleType = "STUDENT" | "ADMIN" | "PROFESSOR";
+
 export type ApiUserPostReqType =
 {
   m_email : string,
-  m_pass  : string
+  m_pass  : string,
 };
 
 export type ApiUserPostResType =
 {
   m_uuid  : string,
-  m_email : string
+  m_email : string,
+  m_role  : ApiUserRoleType
 };
 
 export type ApiUserLoginReqType =
@@ -23,7 +26,8 @@ export type ApiUserLoginResType =
   body  :
   {
     m_uuid  : string,
-    m_email : string
+    m_email : string,
+    m_role  : ApiUserRoleType
   }
 };
 
