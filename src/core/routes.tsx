@@ -2,14 +2,17 @@ import { createBrowserRouter } from "react-router";
 import GlobalErrorCmp from "@/core/components/GlobalErrorCmp";
 
 import RootRoute from "@/Root/RootRoute";
+import EceAuthGuard from "./components/EceAuthGuardCmp";
 import LoginRoute from "@/Root/Login/LoginRoute";
 import RegisterRoute from "@/Root/Register/RegisterRoute";
+import AdminRoute from "@/Root/Admin/AdminRoute";
 
 export const ECE_ROUTE_PATHS =
 {
   ROOT: "/",
   LOGIN: "/login",
-  REGISTER: "/register"
+  REGISTER: "/register",
+  ADMIN: "/admin"
 } as const;
 
 
@@ -37,6 +40,17 @@ export function eceGetRouter()
         {
           path: ECE_ROUTE_PATHS.REGISTER,
           element: <RegisterRoute/>
+        },
+
+        {
+          element: <EceAuthGuard required_role="ADMIN"/>,
+          children:
+          [
+            {
+              path: ECE_ROUTE_PATHS.ADMIN,
+              element: <AdminRoute/>
+            }
+          ]
         }
       ]
     }

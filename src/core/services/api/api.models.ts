@@ -31,3 +31,11 @@ export type ApiUserLoginResType =
   }
 };
 
+
+export type ApiUserMeResType =
+{
+  m_uuid  : string,
+  m_email : string,
+  m_role  : ApiUserRoleType
+};
+

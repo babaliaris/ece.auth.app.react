@@ -28,7 +28,8 @@ export type EceApiErrorInfoType =
 
 export interface EceApiI
 {
-  userPost: (data: models.ApiUserPostReqType) => Promise< EceApiResultI<models.ApiUserPostResType> >;
-  userLogin: (data: models.ApiUserLoginReqType) => Promise< EceApiResultI<models.ApiUserLoginResType> >;
+  userPost  : (data: models.ApiUserPostReqType) => Promise< EceApiResultI<models.ApiUserPostResType> >;
+  userLogin : (data: models.ApiUserLoginReqType) => Promise< EceApiResultI<models.ApiUserLoginResType> >;
+  userMe    : () => Promise< EceApiResultI<models.ApiUserMeResType> >;
 };
 

@@ -1,6 +1,7 @@
 import { type EceApiResultI, type ApiError } from "./api.types";
 import { ece_logger } from "@/core/logger.core";
 import { ECE_ROUTE_PATHS } from "@/core/routes";
+import { useEceAuthStore } from "@/core/zustand-state";
 
 type RequestOptions =
 {
@@ -8,6 +9,7 @@ type RequestOptions =
   path     : string;
   body    ?: unknown;
   headers ?: Record<string, string>;
+  silent  ?: boolean;
 };
 
 /**
@@ -88,13 +90,40 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
     }
 
     // Redirect if to login if Unauthorized.
-    if (response.status === 401)
+    // We use a silence flag, in case we want to skip this.
+    // Provide with silence = true to SKIP this redirection.
+    if (response.status === 401 && !opts.silent)
     {
+      // Calculate the base path.
+      const base_name = import.meta.env.VITE_ROUTER_BASE || '';
+      const base_path = `/${base_name}/`.replace(/\/+/g, '/');
+
+      // ----------|Calculate The RETURN path to the current window location----------|
+      const current_path = window.location.pathname; // e.g., "/ece-auth-app-react/admin/dashboard"
+
+      // Strip the base from the beginning of the string
+      // We use a Regex to ensure we only catch the base at the start (^)
+      const base_pattern = new RegExp(`^${base_path}`, 'i');
+      let relative_path  = current_path.replace(base_pattern, '');
+
+      // Ensure it starts with a single / (slash)
+      if (!relative_path.startsWith('/'))
+      {
+        relative_path = '/' + relative_path;
+      }
+
+      // Add query params if they exist
+      const search      = window.location.search;
+      const return_path = encodeURIComponent(relative_path + search);
+      // ----------|Calculate The RETURN path to the current window location----------|
+
+      // Clear the authenitcation state.
+      useEceAuthStore.getState().clearAuth();
+
       // Remove any double slashes in the middle of the path.
-      const base            = import.meta.env.VITE_ROUTER_BASE;
       const target          = ECE_ROUTE_PATHS.LOGIN;
-      const pathPart        = `/${base}/${target}/`.replace(/\/+/g, '/');
-      const safeRedirect    = `${pathPart}?unauthorized=true`;
+      const redirect_path   = `${base_path}/${target}/`.replace(/\/+/g, '/');
+      const safeRedirect    = `${redirect_path}?unauthorized=true&return_path=${return_path}`;
       window.location.href  = safeRedirect;
 
       ece_logger.warn(`[request.service.ts:eceRequest()] Unauthorized. Redirecting to: ${safeRedirect}`);

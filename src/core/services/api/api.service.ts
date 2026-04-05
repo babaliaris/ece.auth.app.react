@@ -26,6 +26,16 @@ export const ece_api: EceApiI =
       method: "POST",
       body  : data
     });
+  },
+
+  userMe: (): Promise< EceApiResultI<models.ApiUserMeResType> > =>
+  {
+    return eceRequest<models.ApiUserMeResType>(
+    {
+      path    : "/users/me",
+      method  : "GET",
+      silent  : true // Skip 401 redirection.
+    })
   }
 } as const;
 
