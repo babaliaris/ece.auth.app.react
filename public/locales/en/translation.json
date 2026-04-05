@@ -82,5 +82,62 @@
       "name": "Login",
       "aria_label": "Button that opens the login form"
     }
+  },
+
+  "api_error":
+  {
+    "success_bug":
+    {
+      "title": "Network Request BUG",
+      "body" : "This is a code bug, contact the administrators"
+    },
+
+    "no_error":
+    {
+      "title": "Network Request BUG",
+      "body" : "This is a code bug, contact the administrators"
+    },
+
+    "bad_request":
+    {
+      "title": "Network Request: Bad Request",
+      "body" : "This is a soft network error that should not happen. Contact the administrators"
+    },
+
+    "unauthorized":
+    {
+      "title": "Network Request: Unauthorized Access",
+      "body" : "You do not have access to this resource"
+    },
+
+    "forbidden":
+    {
+      "title": "Network Request: Forbidden",
+      "body" : "You are forbidden from accesing the network resource"
+    },
+
+    "not_found":
+    {
+      "title": "Network Request: Not Found",
+      "body" : "The network resource requested, was not found"
+    },
+
+    "conflict":
+    {
+      "title": "Network Request: Conflict",
+      "body" : "The network resource could not be stored because it already exists"
+    },
+
+    "internal_server":
+    {
+      "title": "Networ Request: Internal Server Error",
+      "body" : "An internal server error occured. Try again later"
+    },
+
+    "uknown":
+    {
+      "title": "Networ Request: Uknown Error",
+      "body" : "An uknown network request error occured. Try again later"
+    }
   }
 }

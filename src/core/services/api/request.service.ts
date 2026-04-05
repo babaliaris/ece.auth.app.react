@@ -1,0 +1,148 @@
+import { type EceApiResultI, type ApiError } from "./api.types";
+import { ece_logger } from "@/core/logger.core";
+
+type RequestOptions =
+{
+  method   : 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  path     : string;
+  body    ?: unknown;
+  headers ?: Record<string, string>;
+};
+
+/**
+  * Executes a network Request.
+  *
+  * This is a "fetch" wrapper that handles
+  * network fairules and error throws so we can
+  * use it in "clean" way throughout the React application
+  * without having to use NOT EVEN A SINGLE try{} - catch {}
+  * block!!! It also returns a promise with a standarized EceApiResultI object.
+  *
+  * @param opts The request options.
+  *
+  * @returns A standarized api result object.
+  */
+export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiResultI<Tdata>>
+{
+  const { method, path, body, headers } = opts;
+  const url = `${import.meta.env.VITE_API_DOMAIN}${path}`;
+
+  // Headers Record.
+  const defaultHeaders: Record<string, string> = {};
+  
+  // If body is provided, we send it as a json format.
+  if (body)
+  {
+    defaultHeaders['Content-Type'] = 'application/json';
+  }
+
+  // Log some info.
+  ece_logger.info(
+    `[request.servece.ts:eceRequest()] Ecexuting request: ${opts.path}`,
+    opts
+  );
+
+  try
+  {
+    const response = await fetch(url,
+    {
+      method,
+      credentials : 'include',
+      headers     : { ...defaultHeaders, ...headers },
+      body        : body ? JSON.stringify(body) : undefined,
+    });
+
+    let data  : Tdata | null    = null;
+    let error : ApiError | null = null;
+
+    // If a body is returned, convert it to a javscript object.
+    if (response.status !== 204 && response.status !== 205)
+    {
+      const contentType = response.headers.get('content-type');
+      
+      // Try to convert the JSON body data to a javascript object.
+      if (contentType && contentType.includes('application/json'))
+      {
+        const json = await response.json();
+
+        // The data are success data.
+        if (response.ok)
+        {
+          data = json;
+        }
+
+        // The data is an error object.
+        else
+        {
+          ece_logger.warn(
+            `[request.servece.ts:eceRequest()] Standard Error for request: ${opts.path}`,
+            {
+              opts  : opts,
+              error : json
+            }
+          );
+          error = json;
+        }
+      }
+    }
+
+    // Handle Network -> Create a custom Error object.
+    // The request reached the destination, but the server
+    // had a problem. This is NOT a user WIFI connection problem.
+    if (!response.ok && !error)
+    {
+      error =
+      {
+        statusCode: response.status,
+        error     : 'Server Side Network Error',
+        message   : response.statusText || `HTTP Error ${response.status}`,
+        reqId     : response.headers.get('x-request-id') || 'unknown',
+      };
+
+      ece_logger.error(
+        `[request.servece.ts:eceRequest()] Server Side Network Error for request: ${opts.path}`,
+        {
+          opts  : opts,
+          error : error
+        }
+      );
+    }
+
+    return {
+      success : response.ok,
+      status  : response.status,
+      data    : data,
+      error   : error
+    };
+
+  }
+
+
+  // Network - Connection error, client side
+  // OR another error was thrown, like failing
+  // to convert the JSON body to a javascript Object.
+  // The later, could be a backend bug as well.
+  catch (e)
+  {
+    ece_logger.error(
+      `[request.servece.ts:eceRequest()] Client Side Network Error for request: ${opts.path}`,
+      {
+        opts  : opts,
+        error : e instanceof Error ? e.message : 'Check your internet connection'
+      }
+    );
+
+    return {
+      success : false,
+      status  : 0,
+      data    : null,
+      error   :
+      {
+        statusCode: 0,
+        error     : 'Network Error',
+        message   : e instanceof Error ? e.message : 'Check your internet connection',
+        reqId     : 'client-side',
+      },
+    };
+  }
+}
