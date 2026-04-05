@@ -129,6 +129,20 @@ export function eceApiGetErrorInfo (result: EceApiResultI<unknown>): EceApiError
     }
   }
 
+  if (result.status === 0)
+  {
+    ece_logger.error(
+      '[api.ts:errorHandler()] Network Error',
+      result.error
+    );
+
+    return {
+      api_error   : result.error,
+      dialog_title: i18n.t('api_error.connection.title'),
+      dialog_body : i18n.t('api_error.connection.body')
+    }
+  }
+
 
   ece_logger.error(
     '[api.ts:errorHandler()] Api Uknown Server Error',

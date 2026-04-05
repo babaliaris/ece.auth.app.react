@@ -134,6 +134,12 @@
       "body" : "An internal server error occured. Try again later"
     },
 
+    "connection":
+    {
+      "title": "Networ Request: Connection Failed",
+      "body" : "Failed to connect to the server. Check your internet connection"
+    },
+
     "uknown":
     {
       "title": "Networ Request: Uknown Error",
