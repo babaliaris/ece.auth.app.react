@@ -47,7 +47,7 @@ function RootRoute()
     };
 
     initAuthState();
-  }, []);
+  }, [clearAuth, setAuth, setInitialized]);
 
   return (
     // Contains the Theme Provider as well.

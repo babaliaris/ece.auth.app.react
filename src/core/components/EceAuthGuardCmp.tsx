@@ -36,14 +36,14 @@ function EceAuthGuard(
   // Initialized and NOT logged in? 
   if (!is_authenticated)
   {
-    ece_logger.warn(
-      `[EceAuthGuard] User is not authenticated, redirecting to login...`
-    );
+    const current_path  = `${location.pathname}${location.search}`;
+    const login_url     = `${ECE_ROUTE_PATHS.LOGIN}?unauthorized=true&return_path=${encodeURIComponent(current_path)}`;
+
+    ece_logger.warn(`[EceAuthGuard] Redirecting to: ${login_url}`);
 
     return (
       <Navigate
-      to={ECE_ROUTE_PATHS.LOGIN}
-      state={{ from: location }}
+      to={login_url}
       replace
       />
     );

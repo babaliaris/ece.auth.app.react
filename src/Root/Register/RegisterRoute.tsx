@@ -30,7 +30,7 @@ function RegisterRoute()
       const err = eceApiGetErrorInfo(result);
       alert(err.dialog_body);
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <RegisterUI

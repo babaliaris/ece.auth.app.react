@@ -6,13 +6,19 @@ import EceAuthGuard from "./components/EceAuthGuardCmp";
 import LoginRoute from "@/Root/Login/LoginRoute";
 import RegisterRoute from "@/Root/Register/RegisterRoute";
 import AdminRoute from "@/Root/Admin/AdminRoute";
+import SubjectsRoute from "@/Root/Admin/Exams/SubjectsRoute";
+import ExamsRoute from "@/Root/Admin/Exams/ExamsRoute";
+import ExaminationsRoute from "@/Root/Admin/Exams/ExaminationsRoute";
 
 export const ECE_ROUTE_PATHS =
 {
   ROOT: "/",
   LOGIN: "/login",
   REGISTER: "/register",
-  ADMIN: "/admin"
+  ADMIN: "/admin",
+  ADMIN_SUBJECTS: "/admin/subjects",
+  ADMIN_EXAMS: "/admin/exams",
+  ADMIN_EXAMINATIONS: "/admin/examinations"
 } as const;
 
 
@@ -48,7 +54,24 @@ export function eceGetRouter()
           [
             {
               path: ECE_ROUTE_PATHS.ADMIN,
-              element: <AdminRoute/>
+              element: <AdminRoute/>,
+              children:
+              [
+                {
+                  path: ECE_ROUTE_PATHS.ADMIN_SUBJECTS,
+                  element: <SubjectsRoute/>
+                },
+
+                {
+                  path: ECE_ROUTE_PATHS.ADMIN_EXAMS,
+                  element: <ExamsRoute/>
+                },
+
+                {
+                  path: ECE_ROUTE_PATHS.ADMIN_EXAMINATIONS,
+                  element: <ExaminationsRoute/>
+                }
+              ]
             }
           ]
         }

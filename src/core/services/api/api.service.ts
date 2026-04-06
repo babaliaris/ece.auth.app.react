@@ -24,7 +24,8 @@ export const ece_api: EceApiI =
     {
       path  : "/users/login",
       method: "POST",
-      body  : data
+      body  : data,
+      silent: true //Skip 401 redirection.
     });
   },
 

@@ -36,6 +36,12 @@
 
       "name": "Register",
       "aria_label": "Button that opens the registration form"
+    },
+
+    "failure":
+    {
+      "title": "Login Failed",
+      "body": "Wrong Credentials, please try again."
     }
   },
 
@@ -144,6 +150,27 @@
     {
       "title": "Networ Request: Uknown Error",
       "body" : "An uknown network request error occured. Try again later"
+    }
+  },
+
+  "admin_sidebar":
+  {
+    "subjects":
+    {
+      "title": "Subjects",
+      "tip": "Manage subjects"
+    },
+
+    "exams":
+    {
+      "title": "Exams",
+      "tip": "Manage semester exams"
+    },
+
+    "examinations":
+    {
+      "title": "Examinations",
+      "tip": "Manage examinations"
     }
   }
 }
