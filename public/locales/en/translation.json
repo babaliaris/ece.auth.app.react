@@ -2,6 +2,11 @@
   "app_title" : "Ece Auth App",
   "required"  : "Required",
 
+  "root":
+  {
+    "restoring_session": "Restoring User Session"
+  },
+
   "login":
   {
     "title" : "User Login",

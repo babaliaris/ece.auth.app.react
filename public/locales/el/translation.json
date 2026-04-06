@@ -2,6 +2,11 @@
   "app_title" : "Ece Auth App",
   "required"  : "Υποχρεωτικό*",
 
+  "root":
+  {
+    "restoring_session": "Επανάκτηση Συνεδρίασης Χρήστη"
+  },
+
   "login":
   {
     "title" : "Σύνδεση Χρήστη",

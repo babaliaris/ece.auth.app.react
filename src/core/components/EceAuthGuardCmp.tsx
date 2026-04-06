@@ -18,20 +18,9 @@ function EceAuthGuard(
 
   const {
     user,
-    is_authenticated,
-    is_initialized
+    is_authenticated
   } = useEceAuthStore();
 
-  // Check if the state is still Initializing.
-  if (!is_initialized)
-  {
-    ece_logger.info(
-      `[EceAuthGuard] Auth (ZUSTAND) state is Initializing...`
-    );
-
-    // TODO: Replace this with a spinner or something.
-    return <div>Initializing The Application</div>; 
-  }
 
   // Initialized and NOT logged in? 
   if (!is_authenticated)

@@ -4,10 +4,20 @@ import { EceAppProvider } from "@/core/contexts/app_context/app.context";
 import { ece_api } from "@/core/services/api/api.service";
 import { ece_logger } from "@/core/logger.core";
 import { useEceAuthStore } from "@/core/zustand-state";
+import EceLoadingCmp from "@/core/components/EceLoadingCmp";
+import { useTranslation } from "react-i18next";
 
 function RootRoute()
 {
-  const {setAuth, clearAuth, setInitialized} = useEceAuthStore();
+  const {
+    setAuth,
+    clearAuth,
+    setInitialized,
+    is_initialized
+  } = useEceAuthStore();
+
+  const {t} = useTranslation();
+
 
   // Intitialize the authentication state in the background.
   useEffect(()=>
@@ -49,13 +59,18 @@ function RootRoute()
     initAuthState();
   }, [clearAuth, setAuth, setInitialized]);
 
-  return (
-    // Contains the Theme Provider as well.
-    <EceAppProvider>
-      
-      {/*Render the rest of the APP*/}
-      <Outlet/>
 
+  return (
+    <EceAppProvider>
+      {
+        !is_initialized &&
+        <EceLoadingCmp
+        message={t('root.restoring_session')}
+        />
+      }
+      {
+        is_initialized && <Outlet/>
+      }
     </EceAppProvider>
   );
 }
