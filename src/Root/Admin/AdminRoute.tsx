@@ -1,10 +1,16 @@
 import { useMemo } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router";
 import { ECE_ROUTE_PATHS } from "@/core/routes";
-import { Book, Event, CalendarMonth } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import EceSidebarCmp from "@/core/components/EceSidebarCmp";
 import { useTranslation } from "react-i18next";
+import EceSidebarCmp from "@/core/components/EceSidebarCmp";
+
+import {
+  Book as BookIcon,
+  Event as EventIcon,
+  CalendarMonth as CalendarMonthIcon
+} from "@mui/icons-material";
+
 
 function AdminRoute()
 {
@@ -15,21 +21,21 @@ function AdminRoute()
   const admin_items = useMemo(()=>(
   [
     {
-      icon    : <Book />,
+      icon    : <BookIcon />,
       title   : t('admin_sidebar.subjects.title'),
       tip     : t('admin_sidebar.subjects.tip'),
       onClick : () => navigate(ECE_ROUTE_PATHS.ADMIN_SUBJECTS, {replace: true}),
       active  : location.pathname === ECE_ROUTE_PATHS.ADMIN_SUBJECTS
     },
     {
-      icon    : <Event />,
+      icon    : <EventIcon />,
       title   : t('admin_sidebar.exams.title'),
       tip     : t('admin_sidebar.exams.tip'),
       onClick : () => navigate(ECE_ROUTE_PATHS.ADMIN_EXAMS, {replace: true}),
       active  : location.pathname === ECE_ROUTE_PATHS.ADMIN_EXAMS
     },
     {
-      icon    : <CalendarMonth />,
+      icon    : <CalendarMonthIcon />,
       title   : t('admin_sidebar.examinations.title'),
       tip     : t('admin_sidebar.examinations.tip'),
       onClick : () => navigate(ECE_ROUTE_PATHS.ADMIN_EXAMINATIONS, {replace: true}),
