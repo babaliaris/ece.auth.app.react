@@ -41,7 +41,7 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
 
   // Log some info.
   ece_logger.info(
-    `[request.service.ts:eceRequest()] Ecexuting request: ${opts.path}`,
+    `[request.service.ts:eceRequest()] Ecexuting request: ${url}`,
     opts
   );
 
@@ -175,11 +175,15 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
   // The later, could be a backend bug as well.
   catch (e)
   {
+    const isOffline     = !window.navigator.onLine;
+    const errorMessage  = e instanceof Error ? e.message : 'Unknown Error';
+    const errorType     = isOffline ? 'Client Offline' : 'Server Unreachable / DNS Error';
+
     ece_logger.error(
-      `[request.service.ts:eceRequest()] Client Side Network Error for request: ${opts.path}`,
+      `[request.service.ts:eceRequest()] ${errorType} for request: ${opts.path}`,
       {
         opts  : opts,
-        error : e instanceof Error ? e.message : 'Check your internet connection'
+        error : errorMessage
       }
     );
 
@@ -190,9 +194,11 @@ export async function eceRequest<Tdata>(opts: RequestOptions): Promise<EceApiRes
       error   :
       {
         statusCode: 0,
-        error     : 'Network Error',
-        message   : e instanceof Error ? e.message : 'Check your internet connection',
-        reqId     : 'client-side',
+        error     : errorType,
+        message   : isOffline
+        ? 'Please check your internet connection.' 
+        : 'The server is currently unreachable. It might be down.',
+        reqId     : 'Network-Layer',
       },
     };
   }
