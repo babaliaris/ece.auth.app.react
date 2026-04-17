@@ -1,6 +1,7 @@
 {
   "app_title" : "Ece Auth App",
-  "required"  : "Required",
+  "required"  : "Required*",
+  "max_255"   : "Field can have max 255 characters",
 
   "root":
   {
@@ -176,6 +177,35 @@
     {
       "title": "Examinations",
       "tip": "Manage examinations"
+    }
+  },
+
+  "admin_subjects":
+  {
+    "title": "Subjects",
+    "desc":"Manage class subjects",
+    "float_btn":
+    {
+      "tip": "Add a new subject",
+      "aria_label": "The button for adding a new subject"
+    },
+    "dialog":
+    {
+      "title_create": "Create Subject",
+      "title_edit": "Edit Subject",
+      "name":
+      {
+        "title": "Name",
+        "placeholder": "Give a name for the new subject"
+      },
+      "school":
+      {
+        "title": "School",
+        "placeholder": "Give the school name of this subject"
+      },
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
     }
   }
 }

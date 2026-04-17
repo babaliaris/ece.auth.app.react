@@ -30,6 +30,12 @@ export interface EceApiI
 {
   userPost  : (data: models.ApiUserPostReqType) => Promise< EceApiResultI<models.ApiUserPostResType> >;
   userLogin : (data: models.ApiUserLoginReqType) => Promise< EceApiResultI<models.ApiUserLoginResType> >;
+  userLogout: ()=> Promise< EceApiResultI<null> >;
   userMe    : () => Promise< EceApiResultI<models.ApiUserMeResType> >;
+
+  subjectPost     : (data: models.ApiSubjectPostReqType[]) => Promise< EceApiResultI<models.ApiSubjectPostResType[]> >;
+  subjectsPaginate: (page: number, limit?: number) => Promise< EceApiResultI<models.ApiSubjectsPaginateResType> >;
+  subjectUpdate   : (data: models.ApiSubjectPatchReqType, subject_uuid: number) => Promise< EceApiResultI<null> >;
+  subjectDelete   : (subject_uuid: number) => Promise< EceApiResultI<null> >;
 };
 

@@ -25,7 +25,17 @@ export const ece_api: EceApiI =
       path  : "/users/login",
       method: "POST",
       body  : data,
-      silent: true //Skip 401 redirection.
+      silent: true // Skip 401 redirection.
+    });
+  },
+
+  userLogout: (): Promise< EceApiResultI<null> > =>
+  {
+    return eceRequest<null>(
+    {
+      path  : "/users/logout",
+      method: "POST",
+      silent: true // Skip 401 redirection.
     });
   },
 
@@ -36,7 +46,51 @@ export const ece_api: EceApiI =
       path    : "/users/me",
       method  : "GET",
       silent  : true // Skip 401 redirection.
-    })
+    });
+  },
+
+
+
+  subjectPost: (data: models.ApiSubjectPostReqType[])
+  : Promise< EceApiResultI<models.ApiSubjectPostResType[]> > =>
+  {
+    return eceRequest<models.ApiSubjectPostResType[]>(
+    {
+      path  : "/subjects",
+      method: "POST",
+      body  : data
+    });
+  },
+
+  subjectsPaginate: (page: number, limit?: number)
+  : Promise< EceApiResultI<models.ApiSubjectsPaginateResType> > =>
+  {
+    return eceRequest<models.ApiSubjectsPaginateResType>(
+    {
+      path  : `/subjects?m_page=${page}&m_limit=${limit ? limit: 20}`,
+      method: "GET"
+    });
+  },
+
+  subjectUpdate: (data: models.ApiSubjectPatchReqType, subject_uuid: number)
+  : Promise< EceApiResultI<null> > =>
+  {
+    return eceRequest<null>(
+    {
+      path  : `/subjects/${subject_uuid}`,
+      method: "PATCH",
+      body  : data
+    });
+  },
+
+  subjectDelete: (subject_uuid: number)
+  : Promise< EceApiResultI<null> > =>
+  {
+    return eceRequest<null>(
+    {
+      path  : `/subjects/${subject_uuid}`,
+      method: "DELETE",
+    });
   }
 } as const;
 

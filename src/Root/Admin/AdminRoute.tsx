@@ -58,7 +58,7 @@ function AdminRoute()
       component="main"
       sx=
       {{
-        flexGrow: 1, p: 3
+        flexGrow: 1, pl: 2, pr: 2
       }}>
         <Outlet />
 
