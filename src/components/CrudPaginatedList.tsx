@@ -17,10 +17,10 @@ export type CrudPaginatedListProps<Tschema extends yup.AnyObject, Titem> =
 {
   title                 : string,
   items                 : Titem[],
-  content_schema        : yup.ObjectSchema<Tschema>,
+  schema                : yup.ObjectSchema<Tschema>,
   default_values        : Tschema,
-  getUUID               : (data: unknown) => string,
-  onSubmit              : (data: unknown, edit_uuid: string | null) => Promise<void>,
+  getUUID               : (data: Titem) => string,
+  onSubmit              : (data: Tschema, edit_uuid: string | null) => Promise<void>,
   float_btn_tip         : string,
   dialog_create_title   : string,
   dialog_cancel         : string,
@@ -41,7 +41,7 @@ export type CrudPaginatedListProps<Tschema extends yup.AnyObject, Titem> =
 
 function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
 {
-  items, onSubmit, onDelete, content_schema,
+  items, onSubmit, onDelete, schema,
   default_values, getUUID, title, description,
   float_btn_tip, dialog_create_title,
   dialog_cancel, dialog_create, editing,
@@ -52,7 +52,7 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
   const [editing_uuid, setEditingUUID]              = useState<string | null>(null);
   const { control, handleSubmit, reset, formState } = useForm(
   {
-    resolver      : yupResolver(content_schema) as Resolver<Tschema>,
+    resolver      : yupResolver(schema) as Resolver<Tschema>,
     defaultValues : default_values as DefaultValues<Tschema>,
     mode          : 'onChange'
   });
@@ -75,14 +75,14 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
       reset();
     }
     setIsModalOpened(true);
-  }, [reset, getUUID, editing]);
+  }, [reset, getUUID, editing, default_values]);
 
 
   const handleModalClose = useCallback(()=>
   {
     reset(default_values);
     setIsModalOpened(false);
-  },[reset]);
+  },[reset, default_values]);
 
 
 
