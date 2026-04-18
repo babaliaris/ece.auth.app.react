@@ -207,5 +207,19 @@
       "create": "Δημιουργία",
       "save": "Αποθήκευση"
     }
+  },
+
+  "crud_paginated_list":
+  {
+    "on_mount_loading"  : "Φόρτωση Δεδομένων...",
+    "on_delete_loading" : "Διαγραφή...",
+    "on_create_loading" : "Δημιουργία...",
+    "on_edit_loading"   : "Αποθήκευση...",
+    "load_more_btn":
+    {
+      "tip": "Φόρτωση περισσότερων δεδομένων",
+      "more": "Φορτωση Περισσοτερων",
+      "loading": "Φορτωνει..."
+    }
   }
 }

@@ -7,10 +7,11 @@ import {
   Box, Typography, Button, IconButton,
   List, ListItem,
   Fab, Dialog, DialogTitle, DialogContent, DialogActions,
-  Tooltip, Zoom
+  Tooltip, Zoom, CircularProgress, Backdrop
 } from '@mui/material';
 
 import { Add, Edit, Delete } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 
 export type CrudPaginatedListProps<Tschema extends yup.AnyObject, Titem> =
@@ -29,6 +30,10 @@ export type CrudPaginatedListProps<Tschema extends yup.AnyObject, Titem> =
   FormUI                : (control: Control<Tschema>)=>React.ReactNode,
   onDelete             ?: (uuid: string) => Promise<void>,
   description          ?: string,
+  has_more             ?: boolean,
+  onLoadMore           ?: () => Promise<void>,
+  is_loading_more      ?: boolean,
+  is_loading           ?: boolean,
   editing              ?:
   {
     dialog_edit_title : string,
@@ -45,11 +50,13 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
   default_values, getUUID, title, description,
   float_btn_tip, dialog_create_title,
   dialog_cancel, dialog_create, editing,
+  has_more, is_loading_more, is_loading, onLoadMore,
   ItemUI, FormUI
 }: CrudPaginatedListProps<Tschema, Titem>)
 {
   const [is_modal_opened, setIsModalOpened]         = useState(false);
   const [editing_uuid, setEditingUUID]              = useState<string | null>(null);
+  const {t}                                         = useTranslation();
   const { control, handleSubmit, reset, formState } = useForm(
   {
     resolver      : yupResolver(schema) as Resolver<Tschema>,
@@ -98,8 +105,33 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
     {{
       height: "100%",
       display: "flex", flexDirection: "column",
-      overflow: "hidden"
+      overflow: "hidden",
+      position: "relative"
     }}>
+
+      {/* THE LOADING OVERLAY */ }
+      <Backdrop
+      sx=
+      {{
+        color: 'primary.main',
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        backdropFilter: 'blur(2px)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+      }}
+      open={!!is_loading}
+      >
+        <CircularProgress
+        color="primary"
+        />
+
+        <Typography variant="h6">
+          {t('crud_paginated_list.on_mount_loading')}
+        </Typography>
+      </Backdrop>
 
       { /*List Title*/ }
       <Typography
@@ -239,6 +271,29 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
         </Tooltip>
 
       </Zoom>
+
+      {has_more && (
+        <Box
+        sx=
+        {{
+          display: 'flex', justifyContent: 'center', p: 2
+        }}>
+          <Tooltip
+          title={t('crud_paginated_list.load_more_btn.tip')}
+          >
+            <span>
+              <Button
+                variant="contained"
+                onClick={onLoadMore}
+                disabled={is_loading_more}
+                startIcon={is_loading_more ? <CircularProgress size={20} color="inherit" /> : null}
+              >
+                {is_loading_more ? t('crud_paginated_list.load_more_btn.loading') : t('crud_paginated_list.load_more_btn.more')}
+              </Button>
+            </span>
+          </Tooltip>
+        </Box>
+      )}
 
       {/* CREATE/EDIT MODAL */}
       <Dialog

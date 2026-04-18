@@ -20,17 +20,22 @@ export type SubjectData =
 
 export type SubjectsUIProps =
 {
-  subjects  : ApiSubjectDataType[];
-  onSubmit  : (data: SubjectData, edit_uuid: string | null) => Promise<void>;
-  onDelete  : (uuid: string) => Promise<void>;
-  isLoading?: boolean;
+  subjects        : ApiSubjectDataType[];
+  onSubmit        : (data: SubjectData, edit_uuid: string | null) => Promise<void>;
+  onDelete        : (uuid: string) => Promise<void>;
+  has_more       ?: boolean,
+  is_loading_more?: boolean,
+  is_loading     ?: boolean,
+  onLoadMore: () => Promise<void>
 };
 
 
 
 function SubjectsUI(
 {
-  subjects, onSubmit, onDelete
+  subjects, onSubmit, onDelete,
+  has_more, is_loading_more, is_loading,
+  onLoadMore
 }: SubjectsUIProps)
 {
   const { t } = useTranslation();
@@ -113,6 +118,10 @@ function SubjectsUI(
       dialog_save: t('admin_subjects.dialog.save'),
       getEditValues: (data) => ({m_name: data.m_name, m_school: data.m_school})
     }}
+    is_loading={is_loading}
+    is_loading_more={is_loading_more}
+    has_more={has_more}
+    onLoadMore={onLoadMore}
     />
   );
 }

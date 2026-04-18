@@ -1,5 +1,17 @@
 export type ApiUserRoleType = "STUDENT" | "ADMIN" | "PROFESSOR";
 
+export type ApiPaginateResType<Tdata> =
+{
+  m_data: Tdata[],
+  m_meta:
+  {
+    m_total_pages : number,
+    m_current_page: number,
+    m_limit       : number
+  }
+};
+
+
 export type ApiUserPostReqType =
 {
   m_email : string,
@@ -55,18 +67,6 @@ export type ApiSubjectDataType =
   m_uuid  : string,
   m_name  : string,
   m_school: string
-};
-
-
-export type ApiSubjectsPaginateResType =
-{
-  m_data: ApiSubjectDataType[],
-  m_meta:
-  {
-    m_total_pages : number,
-    m_current_page: number,
-    m_limit       : number
-  }
 };
 
 export type ApiSubjectPatchReqType =

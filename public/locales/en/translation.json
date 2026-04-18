@@ -207,5 +207,19 @@
       "create": "Create",
       "save": "Save"
     }
+  },
+  
+  "crud_paginated_list":
+  {
+    "on_mount_loading"  : "Loading Data...",
+    "on_delete_loading" : "Deleting...",
+    "on_create_loading" : "Creating...",
+    "on_edit_loading"   : "Saving...",
+    "load_more_btn":
+    {
+      "tip": "Load more content",
+      "more": "Load More",
+      "loading": "Loading..."
+    }
   }
 }

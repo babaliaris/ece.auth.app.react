@@ -63,9 +63,9 @@ export const ece_api: EceApiI =
   },
 
   subjectsPaginate: (page: number, limit?: number)
-  : Promise< EceApiResultI<models.ApiSubjectsPaginateResType> > =>
+  : Promise< EceApiResultI<models.ApiPaginateResType<models.ApiSubjectDataType>> > =>
   {
-    return eceRequest<models.ApiSubjectsPaginateResType>(
+    return eceRequest<models.ApiPaginateResType<models.ApiSubjectDataType> >(
     {
       path  : `/subjects?m_page=${page}&m_limit=${limit ? limit: 20}`,
       method: "GET"
