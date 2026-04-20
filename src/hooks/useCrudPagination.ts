@@ -12,10 +12,13 @@ type UseCrudPaginationType<Tdata> =
   page            : ApiPaginateResType<Tdata>,
   is_loading      : boolean,
   is_loading_more : boolean,
+  is_searching    : boolean,
   has_more        : boolean,
+  search_value    : string,
   onLoadMore      : () => Promise<void>,
   setPage         : Dispatch<SetStateAction<ApiPaginateResType<Tdata>>>
   setIsLoading    : Dispatch<SetStateAction<boolean>>
+  onSearch        : (value: string)=>void
 };
 
 
@@ -65,17 +68,46 @@ export function useCrudPagination<Tdata>(
     }
   });
 
-  const [is_loading, setIsLoading] = useState(false);
-  const [is_loading_more, setIsLoadingMore] = useState(false)
+  const [is_loading, setIsLoading]              = useState(false);
+  const [is_loading_more, setIsLoadingMore]     = useState(false);
+  const [is_searching, setIsSearching]          = useState(false);
+  const [search_value, setSearchValue]          = useState<string>("");
+  const [debounced_search, setDebouncedSearch]  = useState<string>("");
+
+  // Debounce Search Trigger.
+  // Call the api after 0.5 seconds after a keystroke
+  // so we won't brick the internet connection and API.
+  useEffect(() =>
+  {
+    const handler = setTimeout(() =>
+    {
+      setDebouncedSearch(search_value);
+    }, 500);
+
+    // Cleanup: stops the timer if user types again
+    return () =>
+    {
+      clearTimeout(handler);
+    };
+  }, [search_value]);
 
   // Initial Hydration
   useEffect(() =>
   {
+    let is_active = true;
+
     const hydrate = async () =>
     {
       setIsLoading(true);
 
-      const res = await fetchFn(0, options?.limit); // Fetch the first page (zero page).
+      const search = debounced_search || undefined;
+
+      const res = await fetchFn(0, options?.limit, search); // Fetch the first page (zero page).
+
+      // Return if this USE EFFECT call has been disabled
+      // do to another call. Only the latest call should Update the UI
+      // to avoid race conditions.
+      if (!is_active) return;
 
       // TODO: Use assertion to check res.data.m_data if its an array. ACTUALLY this belongs to the API fetch service.
       if ( res.success && res.data && Array.isArray(res.data.m_data) ) setPage(res.data);
@@ -84,12 +116,28 @@ export function useCrudPagination<Tdata>(
       else if (res.status !== 404) alert(eceApiGetErrorInfo(res).dialog_body);
 
       setIsLoading(false);
+      setIsSearching(false);
     };
 
     hydrate();
-  }, [fetchFn, options?.limit]);
+
+    // Cleanup function runs when debounced_search changes again
+    return () =>
+    {
+      is_active = false
+    };
+
+  }, [fetchFn, options?.limit, debounced_search]);
 
 
+  /*
+    * Set searching value.
+  */
+  const onSearch = useCallback((value: string) =>
+  {
+    setSearchValue(value);
+    setIsSearching(true);
+  }, []);
 
   // Load More Data
   const onLoadMore = useCallback(async () =>
@@ -98,7 +146,7 @@ export function useCrudPagination<Tdata>(
     setIsLoadingMore(true);
 
     const nextPage  = page.m_meta.m_current_page + 1;
-    const res       = await fetchFn(nextPage, options?.limit);
+    const res       = await fetchFn(nextPage, options?.limit, debounced_search || undefined);
 
     if (res.success && res.data)
     {
@@ -116,7 +164,7 @@ export function useCrudPagination<Tdata>(
     }
 
     setIsLoadingMore(false);
-  }, [fetchFn, page.m_meta.m_current_page, is_loading_more, options?.limit]);
+  }, [fetchFn, page.m_meta.m_current_page, is_loading_more, options?.limit, debounced_search]);
 
   /**
    * We calculate the sorted data ONLY when the page changes
@@ -140,10 +188,13 @@ export function useCrudPagination<Tdata>(
     page: sortedPage,
     is_loading,
     is_loading_more,
+    is_searching,
     has_more: page.m_meta.m_current_page < page.m_meta.m_total_pages - 1,
+    search_value,
     onLoadMore,
     setPage,
-    setIsLoading
+    setIsLoading,
+    onSearch
   };
 }
 

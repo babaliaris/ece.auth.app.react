@@ -62,12 +62,20 @@ export const ece_api: EceApiI =
     });
   },
 
-  subjectsPaginate: (page: number, limit?: number)
+  subjectsPaginate: (page: number, limit: number = 100, search?: string)
   : Promise< EceApiResultI<models.ApiPaginateResType<models.ApiSubjectDataType>> > =>
   {
+    const params = new URLSearchParams(
+    {
+      m_page  : String(page),
+      m_limit : String(limit)
+    });
+
+    if (search) params.append('m_search', search);
+
     return eceRequest<models.ApiPaginateResType<models.ApiSubjectDataType> >(
     {
-      path  : `/subjects?m_page=${page}&m_limit=${limit ? limit: 20}`,
+      path  : `/subjects?${params.toString()}`,
       method: "GET"
     });
   },
@@ -106,12 +114,20 @@ export const ece_api: EceApiI =
     });
   },
 
-  examPaginate: (page: number, limit?: number)
+  examPaginate: (page: number, limit: number = 100, search?: string)
   : Promise< EceApiResultI<models.ApiPaginateResType<models.ApiExamDataType>> > =>
   {
+    const params = new URLSearchParams(
+    {
+      m_page  : String(page),
+      m_limit : String(limit)
+    });
+
+    if (search) params.append('m_search', search);
+
     return eceRequest<models.ApiPaginateResType<models.ApiExamDataType> >(
     {
-      path  : `/exams?m_page=${page}&m_limit=${limit ? limit: 20}`,
+      path  : `/exams?${params.toString()}`,
       method: "GET"
     });
   },

@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { type Control } from 'react-hook-form';
 import * as yup from 'yup';
 import {
@@ -8,43 +8,33 @@ import { School } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import TextInputCmp from '@/core/components/ui/TextInputCmp';
 import { type ApiSubjectDataType } from '@/core/services/api/api.models';
+import CrudPaginatedList, { type CrudPiginatedListController } from '@/components/CrudPaginatedList';
+import i18n from '@/core/i18next.setup';
 
-import CrudPaginatedList from '@/components/CrudPaginatedList';
 
-
-export type SubjectData =
+const SubjectShema = yup.object(
 {
-  m_name  : string;
-  m_school: string;
-};
+  m_name  : yup.string().required(i18n.t('required')).max(255, i18n.t('max_255')),
+  m_school: yup.string().required(i18n.t('required')).max(255, i18n.t('max_255')),
+}).required();
 
-export type SubjectsUIProps =
+
+export type SubjectData = yup.InferType<typeof SubjectShema>;
+
+type SubjectsUIProps =
 {
-  subjects        : ApiSubjectDataType[];
-  onSubmit        : (data: SubjectData, edit_uuid: string | null) => Promise<void>;
-  onDelete        : (uuid: string) => Promise<void>;
-  has_more       ?: boolean,
-  is_loading_more?: boolean,
-  is_loading     ?: boolean,
-  onLoadMore: () => Promise<void>
-};
+} & CrudPiginatedListController<yup.InferType<typeof SubjectShema>, ApiSubjectDataType>;
 
 
 
 function SubjectsUI(
 {
-  subjects, onSubmit, onDelete,
+  items, onSubmit, onDelete,
   has_more, is_loading_more, is_loading,
-  onLoadMore
+  onLoadMore, search_filter
 }: SubjectsUIProps)
 {
   const { t } = useTranslation();
-
-  const schema = useMemo(() => yup.object(
-  {
-    m_name  : yup.string().required(t('required')).max(255, t('max_255')),
-    m_school: yup.string().required(t('required')).max(255, t('max_255')),
-  }).required(), [t]);
 
   const itemUI = useCallback( (item: ApiSubjectDataType) =>
   <>
@@ -74,7 +64,7 @@ function SubjectsUI(
     />
   </>, []);
 
-  const formUI = useCallback( (control: Control<yup.InferType<typeof schema>>) =>
+  const formUI = useCallback( (control: Control<SubjectData>) =>
   <>
     <TextInputCmp
     name="m_name"
@@ -97,20 +87,17 @@ function SubjectsUI(
 
 
   return (
-    <CrudPaginatedList<yup.InferType<typeof schema>, ApiSubjectDataType>
+    <CrudPaginatedList<SubjectData, ApiSubjectDataType>
     title={t('admin_subjects.title')}
-    items={subjects}
-    schema={schema}
+    schema={SubjectShema}
     default_values={{m_name: '', m_school: ''}}
     getUUID={(data)=>data.m_uuid}
-    onSubmit={(data, edit_uuid)=>onSubmit(data, edit_uuid)}
     float_btn_tip={t('admin_subjects.float_btn.tip')}
     dialog_create_title={t('admin_subjects.dialog.title_create')}
     dialog_cancel={t('admin_subjects.dialog.cancel')}
     dialog_create={t('admin_subjects.dialog.create')}
     ItemUI={ item=>itemUI(item) }
     FormUI={ control=>formUI(control) }
-    onDelete={ (uuid)=>onDelete(uuid) }
     description={t('admin_subjects.desc')}
     editing=
     {{
@@ -118,10 +105,16 @@ function SubjectsUI(
       dialog_save: t('admin_subjects.dialog.save'),
       getEditValues: (data) => ({m_name: data.m_name, m_school: data.m_school})
     }}
-    is_loading={is_loading}
-    is_loading_more={is_loading_more}
-    has_more={has_more}
-    onLoadMore={onLoadMore}
+    controller={{
+      items,
+      onSubmit,
+      onDelete,
+      onLoadMore,
+      has_more,
+      is_loading,
+      is_loading_more,
+      search_filter
+    }}
     />
   );
 }

@@ -8,8 +8,8 @@ import { eceApiGetErrorInfo } from "@/core/services/api/api-error-handler.servic
 function SubjectsRoute()
 {
   const {
-    page, is_loading, is_loading_more, has_more,
-    onLoadMore,setIsLoading, setPage
+    page, is_loading, is_loading_more, is_searching, search_value,
+    has_more, onLoadMore,setIsLoading, setPage, onSearch
   } = useCrudPagination(ece_api.subjectsPaginate);
 
   const onSubjectSubmit = useCallback(async (subject: SubjectData, edit_uuid: string | null)=>
@@ -124,13 +124,19 @@ function SubjectsRoute()
 
   return (
     <SubjectsUI
-    subjects={page.m_data}
-    onSubmit={onSubjectSubmit}
-    onDelete={onSubjectDelete}
-    has_more={has_more}
-    onLoadMore={onLoadMore}
-    is_loading_more={is_loading_more}
-    is_loading={is_loading}
+      items={page.m_data}
+      onSubmit={onSubjectSubmit}
+      onDelete={onSubjectDelete}
+      onLoadMore={onLoadMore}
+      has_more={has_more}
+      is_loading={is_loading}
+      is_loading_more={is_loading_more}
+      search_filter=
+      {{
+        onSearch: onSearch,
+        is_searching: is_searching,
+        search_value: search_value
+      }}
     />
   );
 }

@@ -26,7 +26,9 @@ export type EceApiErrorInfoType =
 };
 
 
-export type EcePaginationFuncType<T> = (page: number, limit?: number) => Promise< EceApiResultI< models.ApiPaginateResType<T> > >;
+export type EcePaginationFuncType<T> =
+  (page: number, limit?: number, search?: string) =>
+  Promise< EceApiResultI< models.ApiPaginateResType<T> > >;
 
 
 export interface EceApiI

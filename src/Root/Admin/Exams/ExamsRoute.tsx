@@ -10,11 +10,7 @@ function ExamsRoute()
   const {
     page, is_loading, is_loading_more, has_more,
     onLoadMore,setIsLoading, setPage
-  } = useCrudPagination(ece_api.examPaginate,
-  {
-    // Sort by year descending (2030 , 2025, 2010, etc).
-    onSortComparator: (a, b)=>b.m_year - a.m_year
-  });
+  } = useCrudPagination(ece_api.examPaginate);
 
   const onSubmit = useCallback(async (exam: ExamData, edit_uuid: string | null)=>
   {
@@ -129,7 +125,7 @@ function ExamsRoute()
 
   return (
     <ExamsUI
-    exams={page.m_data}
+    items={page.m_data}
     onSubmit={onSubmit}
     onDelete={onDelete}
     has_more={has_more}

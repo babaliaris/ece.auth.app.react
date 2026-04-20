@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { type Control } from 'react-hook-form';
 import * as yup from 'yup';
 import {
@@ -9,43 +9,34 @@ import { useTranslation } from 'react-i18next';
 import TextInputCmp from '@/core/components/ui/TextInputCmp';
 import SelectInputCmp from '@/core/components/ui/SelectInputCmp';
 import { type ApiExamDataType } from '@/core/services/api/api.models';
+import CrudPaginatedList, { type CrudPiginatedListController } from '@/components/CrudPaginatedList';
+import i18n from "@/core/i18next.setup";
 
-import CrudPaginatedList from '@/components/CrudPaginatedList';
 
-
-export type ExamData =
+const ExamSchema = yup.object(
 {
-  m_semester: "FALL" | "SPRING";
-  m_year    : number;
-};
+  m_semester: yup.string().oneOf(['FALL', 'SPRING']).required(i18n.t('required')),
+  m_year    : yup.number().required(i18n.t('required')).typeError(i18n.t('not_a_number')),
+}).required();
 
-export type ExamsUIProps =
+
+export type ExamData = yup.InferType<typeof ExamSchema>;
+
+type ExamsUIProps =
 {
-  exams           : ApiExamDataType[];
-  onSubmit        : (data: ExamData, edit_uuid: string | null) => Promise<void>;
-  onDelete        : (uuid: string) => Promise<void>;
-  has_more       ?: boolean,
-  is_loading_more?: boolean,
-  is_loading     ?: boolean,
-  onLoadMore: () => Promise<void>
-};
+} & CrudPiginatedListController<ExamData, ApiExamDataType>;
 
 
 
 function ExamsUI(
 {
-  exams, onSubmit, onDelete,
+  items, onSubmit, onDelete,
   has_more, is_loading_more, is_loading,
   onLoadMore
 }: ExamsUIProps)
 {
   const { t } = useTranslation();
 
-  const schema = useMemo(() => yup.object(
-  {
-    m_semester: yup.string().oneOf(['FALL', 'SPRING']).required(t('required')),
-    m_year    : yup.number().required(t('required')).typeError(t('not_a_number')),
-  }).required(), [t]);
 
   const itemUI = useCallback( (item: ApiExamDataType) =>
   <>
@@ -75,7 +66,7 @@ function ExamsUI(
     />
   </>, []);
 
-  const formUI = useCallback( (control: Control<yup.InferType<typeof schema>>) =>
+  const formUI = useCallback( (control: Control<ExamData>) =>
   <>
     <SelectInputCmp
       name="m_semester"
@@ -99,23 +90,18 @@ function ExamsUI(
   </>, [t]);
 
 
-
-
   return (
-    <CrudPaginatedList<yup.InferType<typeof schema>, ApiExamDataType>
+    <CrudPaginatedList<ExamData, ApiExamDataType>
     title={t('admin_exams.title')}
-    items={exams}
-    schema={schema}
+    schema={ExamSchema}
     default_values={{m_semester: 'FALL', m_year: 2025}}
     getUUID={(data)=>data.m_uuid}
-    onSubmit={(data, edit_uuid)=>onSubmit(data, edit_uuid)}
     float_btn_tip={t('admin_exams.float_btn.tip')}
     dialog_create_title={t('admin_exams.dialog.title_create')}
     dialog_cancel={t('admin_exams.dialog.cancel')}
     dialog_create={t('admin_exams.dialog.create')}
     ItemUI={ item=>itemUI(item) }
     FormUI={ control=>formUI(control) }
-    onDelete={ (uuid)=>onDelete(uuid) }
     description={t('admin_exams.desc')}
     editing=
     {{
@@ -123,10 +109,15 @@ function ExamsUI(
       dialog_save: t('admin_exams.dialog.save'),
       getEditValues: (data) => ({m_semester: data.m_semester, m_year: data.m_year})
     }}
-    is_loading={is_loading}
-    is_loading_more={is_loading_more}
-    has_more={has_more}
-    onLoadMore={onLoadMore}
+    controller={{
+      items,
+      onSubmit,
+      onDelete,
+      onLoadMore,
+      has_more,
+      is_loading,
+      is_loading_more,
+    }}
     />
   );
 }

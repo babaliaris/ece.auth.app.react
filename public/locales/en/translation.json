@@ -253,6 +253,9 @@
       "loading": "Loading..."
     },
     "empty_title": "Not items found...",
-    "empty_description": "There are currently no items in the list."
+    "empty_description": "There are currently no items in the list.",
+    "search_placeholder": "Starts with...",
+    "filtering_by": "You are currenty filtering using",
+    "clear_filters": "Clear Filters"
   }
 }
