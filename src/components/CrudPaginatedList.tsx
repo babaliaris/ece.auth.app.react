@@ -10,7 +10,7 @@ import {
   Tooltip, Zoom, CircularProgress, Backdrop
 } from '@mui/material';
 
-import { Add, Edit, Delete } from '@mui/icons-material';
+import { Add, Edit, Delete, SignalCellularNoSim } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 
@@ -241,6 +241,57 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
             </Box>
 
           ))}
+
+          {/* EMPTY STATE VIEW */}
+          {!is_loading && items.length === 0 && (
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 0.8,
+                textAlign: 'center',
+                p: 3,
+              }}
+            >
+              {/*Icon Container*/}
+              <Box
+                sx={{
+                  fontSize: 64,
+                  color: 'divider',
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {/*Display an Icon*/}
+                <SignalCellularNoSim
+                color='primary'
+                sx=
+                {{
+                  fontSize: 'inherit'
+                }}/>
+              </Box>
+
+              {/*Empty List Title*/}
+              <Typography
+              variant="h5" fontWeight="600" color="text.secondary" gutterBottom
+              >
+                {t('crud_paginated_list.empty_title')}
+              </Typography>
+
+              {/*Empty List Description*/}
+              <Typography
+              variant="body1" color="text.secondary"
+              >
+                {t('crud_paginated_list.empty_description')}
+              </Typography>
+
+            </Box>
+          )}
         </List>
 
       {/* FLOATING ACTION BUTTON */}

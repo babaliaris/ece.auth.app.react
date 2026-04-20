@@ -72,7 +72,7 @@ export const ece_api: EceApiI =
     });
   },
 
-  subjectUpdate: (data: models.ApiSubjectPatchReqType, subject_uuid: number)
+  subjectUpdate: (data: models.ApiSubjectPatchReqType, subject_uuid: string)
   : Promise< EceApiResultI<null> > =>
   {
     return eceRequest<null>(
@@ -83,12 +83,56 @@ export const ece_api: EceApiI =
     });
   },
 
-  subjectDelete: (subject_uuid: number)
+  subjectDelete: (subject_uuid: string)
   : Promise< EceApiResultI<null> > =>
   {
     return eceRequest<null>(
     {
       path  : `/subjects/${subject_uuid}`,
+      method: "DELETE",
+    });
+  },
+
+
+
+  examPost: (data: models.ApiExamPostReqType[])
+  : Promise< EceApiResultI<models.ApiExamPostResType[]> > =>
+  {
+    return eceRequest<models.ApiExamPostResType[]>(
+    {
+      path  : "/exams",
+      method: "POST",
+      body  : data
+    });
+  },
+
+  examPaginate: (page: number, limit?: number)
+  : Promise< EceApiResultI<models.ApiPaginateResType<models.ApiExamDataType>> > =>
+  {
+    return eceRequest<models.ApiPaginateResType<models.ApiExamDataType> >(
+    {
+      path  : `/exams?m_page=${page}&m_limit=${limit ? limit: 20}`,
+      method: "GET"
+    });
+  },
+
+  examUpdate: (data: models.ApiExamPatchReqType, uuid: string)
+  : Promise< EceApiResultI<null> > =>
+  {
+    return eceRequest<null>(
+    {
+      path  : `/exams/${uuid}`,
+      method: "PATCH",
+      body  : data
+    });
+  },
+
+  examDelete: (uuid: string)
+  : Promise< EceApiResultI<null> > =>
+  {
+    return eceRequest<null>(
+    {
+      path  : `/exams/${uuid}`,
       method: "DELETE",
     });
   }

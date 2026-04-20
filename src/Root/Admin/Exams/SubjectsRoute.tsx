@@ -16,6 +16,7 @@ function SubjectsRoute()
   {
     setIsLoading(true);
 
+    // POST
     if ( !edit_uuid )
     {
       const post_result = await ece_api.subjectPost(
@@ -25,20 +26,24 @@ function SubjectsRoute()
         }
       ]);
 
+      // Success.
       if (post_result.success && Array.isArray(post_result.data))
       {
         const fetched_data = post_result.data;
+
+        // Update the UI state.
         setPage((old_state) => (
         {
           ...old_state,
           m_data:
           [
-            ...old_state.m_data,
-            ...fetched_data
+            ...fetched_data,
+            ...old_state.m_data
           ]
         }));
       }
 
+      // Failure.
       else
       {
         // TODO: Show a better UI.
@@ -46,9 +51,41 @@ function SubjectsRoute()
       }
     }
 
+    // Update Request.
     else
     {
-      console.log(`onSubjectSubmit():EDIT is not implemented yet!`);
+      const update_result = await ece_api.subjectUpdate(
+      {
+        m_name: subject.m_name,
+        m_school: subject.m_school
+      }, edit_uuid);
+
+      // Success.
+      if (update_result.success)
+      {
+        // Update the UI state.
+        setPage((old_state)=>(
+        {
+          ...old_state,
+          m_data: old_state.m_data.map((subj)=>
+          {
+            if (subj.m_uuid !== edit_uuid) return subj;
+            return {
+              m_uuid  : edit_uuid,
+              m_name  : subject.m_name,
+              m_school: subject.m_school
+            }
+          })
+        }));
+      }
+
+      // Failure.
+      else
+      {
+        // TODO: Show a better UI.
+        alert(eceApiGetErrorInfo(update_result).dialog_body);
+      }
+
     }
 
     setIsLoading(false);
@@ -58,9 +95,31 @@ function SubjectsRoute()
   const onSubjectDelete = useCallback(async (uuid: string)=>
   {
     setIsLoading(true);
-    console.log(`On Subject Delete uuid = ${uuid}`);
+    const delete_result = await ece_api.subjectDelete(uuid);
+
+    // Success.
+    if (delete_result.success)
+    {
+      // Update the UI state.
+      setPage((old_state)=>(
+      {
+        ...old_state,
+        m_data: old_state.m_data.filter((subj)=>
+        {
+          return subj.m_uuid !== uuid;
+        })
+      }));
+    }
+
+    // Failure.
+    else
+    {
+      // TODO: Show a better UI.
+      alert(eceApiGetErrorInfo(delete_result).dialog_body);
+    }
+
     setIsLoading(false);
-  }, [setIsLoading]);
+  }, [setIsLoading, setPage]);
 
 
   return (

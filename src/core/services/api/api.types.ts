@@ -31,14 +31,22 @@ export type EcePaginationFuncType<T> = (page: number, limit?: number) => Promise
 
 export interface EceApiI
 {
+  // USERS.
   userPost  : (data: models.ApiUserPostReqType) => Promise< EceApiResultI<models.ApiUserPostResType> >;
   userLogin : (data: models.ApiUserLoginReqType) => Promise< EceApiResultI<models.ApiUserLoginResType> >;
   userLogout: ()=> Promise< EceApiResultI<null> >;
   userMe    : () => Promise< EceApiResultI<models.ApiUserMeResType> >;
 
+  // SUBJECTS.
   subjectPost     : (data: models.ApiSubjectPostReqType[]) => Promise< EceApiResultI<models.ApiSubjectPostResType[]> >;
   subjectsPaginate: EcePaginationFuncType<models.ApiSubjectDataType>;
-  subjectUpdate   : (data: models.ApiSubjectPatchReqType, subject_uuid: number) => Promise< EceApiResultI<null> >;
-  subjectDelete   : (subject_uuid: number) => Promise< EceApiResultI<null> >;
+  subjectUpdate   : (data: models.ApiSubjectPatchReqType, subject_uuid: string) => Promise< EceApiResultI<null> >;
+  subjectDelete   : (subject_uuid: string) => Promise< EceApiResultI<null> >;
+
+  // EXAMS.
+  examPost     : (data: models.ApiExamPostReqType[]) => Promise< EceApiResultI<models.ApiExamPostResType[]> >;
+  examPaginate : EcePaginationFuncType<models.ApiExamDataType>;
+  examUpdate   : (data: models.ApiExamPatchReqType, uuid: string) => Promise< EceApiResultI<null> >;
+  examDelete   : (uuid: string) => Promise< EceApiResultI<null> >;
 };
 

@@ -1,7 +1,8 @@
 {
-  "app_title" : "Ece Auth App",
-  "required"  : "Required*",
-  "max_255"   : "Field can have max 255 characters",
+  "app_title"   : "Ece Auth App",
+  "required"    : "Required*",
+  "max_255"     : "Field can have max 255 characters",
+  "not_a_number": "The value must be a number",
 
   "root":
   {
@@ -208,7 +209,37 @@
       "save": "Save"
     }
   },
-  
+
+  "admin_exams":
+  {
+    "title": "Exams",
+    "desc":"Manage exams",
+    "float_btn":
+    {
+      "tip": "Add a new exam",
+      "aria_label": "The button for adding a new exam"
+    },
+    "dialog":
+    {
+      "title_create": "Create Exam",
+      "title_edit": "Edit Exam",
+      "semester":
+      {
+        "title": "Semester",
+        "fall": "FALL",
+        "spring": "SPRING"
+      },
+      "year":
+      {
+        "title": "Year",
+        "placeholder": "Give the year of the exam period"
+      },
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    }
+  },
+
   "crud_paginated_list":
   {
     "on_mount_loading"  : "Loading Data...",
@@ -220,6 +251,8 @@
       "tip": "Load more content",
       "more": "Load More",
       "loading": "Loading..."
-    }
+    },
+    "empty_title": "Not items found...",
+    "empty_description": "There are currently no items in the list."
   }
 }
