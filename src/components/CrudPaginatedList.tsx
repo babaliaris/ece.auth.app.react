@@ -24,6 +24,7 @@ export type CrudPiginatedListController<Tschema extends yup.AnyObject, Titem> =
   onSubmit              : (data: Tschema, edit_uuid: string | null) => Promise<void>,
   onDelete             ?: (uuid: string) => Promise<void>,
   onLoadMore           ?: () => Promise<void>,
+  onItemClick          ?: (data: Titem) => void,
   has_more             ?: boolean,
   is_loading_more      ?: boolean,
   is_loading           ?: boolean,
@@ -303,61 +304,82 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
           >
 
             <ListItem
-              secondaryAction=
-              {
-                <Box>
+            disablePadding
+            secondaryAction=
+            {
+              <Box>
 
-                  { /*Edit Subject Button*/ }
-                  { editing &&
-                    <IconButton
-                    onClick={() => handleModalOpen(item)} color="primary"
-                    >
-
-                      <Edit fontSize="small" />
-
-                    </IconButton>
-                  }
-
-                  { /*Delete Subject Button*/ }
+                { /*Edit Subject Button*/ }
+                { editing &&
+                  <IconButton
+                  onClick={(e) =>
                   {
-                    onDelete &&
-                    <IconButton
-                    onClick={() => onDelete ? onDelete( getUUID(item) ) : null}
-                    color="error"
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  }
+                    e.stopPropagation();
+                    handleModalOpen(item);
+                  }}
+                  color="primary"
+                  >
 
-                </Box>
-              }
-              sx=
-              {{
-                border: 1,
-                borderColor: 'divider',
-                mb: 2,
-                mt: 2,
-                borderRadius: 2,
-                p: 3,
+                    <Edit fontSize="small" />
 
-                transition: (theme) => theme.transitions.create(['transform', 'border-color', 'box-shadow'],
-                {
-                  duration: theme.transitions.duration.shorter,
-                }),
-
-                '&:hover':
-                {
-                  borderColor: 'primary.main', 
-                  transform: 'translateY(-4px)',
-                  boxShadow: (theme) => theme.shadows[4],
-                  outline: '1px solid',
-                  outlineColor: (theme) => theme.palette.primary.main,
+                  </IconButton>
                 }
-              }}
+
+                { /*Delete Subject Button*/ }
+                {
+                  onDelete &&
+                  <IconButton
+                  onClick={(e) =>
+                  {
+                    e.stopPropagation();
+                    onDelete ? onDelete( getUUID(item) ) : null;
+                  }}
+                  color="error"
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                }
+
+              </Box>
+            }
+            sx=
+            {{
+              border: 1,
+              borderColor: 'divider',
+              mb: 2,
+              mt: 2,
+              borderRadius: 2,
+              p: 3,
+
+              transition: (theme) => theme.transitions.create(['transform', 'border-color', 'box-shadow'],
+              {
+                duration: theme.transitions.duration.shorter,
+              }),
+
+              '&:hover':
+              {
+                borderColor: 'primary.main', 
+                transform: 'translateY(-4px)',
+                boxShadow: (theme) => theme.shadows[4],
+                outline: '1px solid',
+                outlineColor: (theme) => theme.palette.primary.main,
+              }
+            }}
             >
 
               { /*User Content*/ }
-              { ItemUI(item) }
+              <Box
+                onClick={() => controller.onItemClick?.(item)}
+                sx={{
+                  width: '100%',
+                  p: 3, // Apply the padding here instead of the ListItem
+                  cursor: controller.onItemClick ? 'pointer' : 'default',
+                  // Manual ripple/hover state simulation if not using ListItemButton
+                  '&:active': { bgcolor: 'action.selected' }
+                }}
+              >
+                { ItemUI(item) }
+              </Box>
 
             </ListItem>
 
