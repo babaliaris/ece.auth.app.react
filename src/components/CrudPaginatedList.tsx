@@ -15,13 +15,14 @@ import {
 } from '@mui/icons-material';
 
 import { useTranslation } from 'react-i18next';
+import { ece_logger } from '@/core/logger.core';
 
 
 
 export type CrudPiginatedListController<Tschema extends yup.AnyObject, Titem> =
 {
   items                 : Titem[],
-  onSubmit              : (data: Tschema, edit_uuid: string | null) => Promise<void>,
+  onSubmit             ?: (data: Tschema, edit_uuid: string | null) => Promise<void>,
   onDelete             ?: (uuid: string) => Promise<void>,
   onLoadMore           ?: () => Promise<void>,
   onItemClick          ?: (data: Titem) => void,
@@ -117,7 +118,17 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
 
   const internalOnSubmit = useCallback((data: Tschema) =>
   {
-    onSubmit(data, editing_uuid);
+    // TODO: IMPLEMENT AN ASSERTION LOGIC TO REPLACE CODE LIKE THIS.
+    if (!onSubmit) ece_logger.warn(
+      "[CrudPaginatedList.tsx]: internalOnSubmit was called but the onSubmit props is undefined.",
+      {
+        file: "CrudPaginatedList.tsx",
+        callback: "internalOnSubmit",
+        reasong: "This should not happen."
+      }
+    );
+
+    if (onSubmit) onSubmit(data, editing_uuid);
     handleModalClose();
   }, [onSubmit, editing_uuid, handleModalClose]);
 
@@ -440,34 +451,37 @@ function CrudPaginatedList<Tschema extends yup.AnyObject, Titem>(
       </List>
 
       {/* FLOATING ACTION BUTTON */}
-      <Zoom
-      in={true}
-      style=
-      {{
-        transitionDelay: '300ms'
-      }}>
+      { onSubmit &&
+        <Zoom
+        in={true}
+        style=
+        {{
+          transitionDelay: '300ms'
+        }}>
 
-        <Tooltip
-        title={float_btn_tip}
-        placement="left"
-        >
-
-          <Fab
-            color="primary"
-            onClick={() => handleModalOpen()}
-            sx=
-            {{
-              position: 'fixed', bottom: 32, right: 32
-            }}
+          <Tooltip
+          title={float_btn_tip}
+          placement="left"
           >
-            <Add />
 
-          </Fab>
+            <Fab
+              color="primary"
+              onClick={() => handleModalOpen()}
+              sx=
+              {{
+                position: 'fixed', bottom: 32, right: 32
+              }}
+            >
+              <Add />
 
-        </Tooltip>
+            </Fab>
 
-      </Zoom>
+          </Tooltip>
 
+        </Zoom>
+      }
+
+      {/* HAS MORE BUTTON */}
       {has_more && (
         <Box
         sx=
